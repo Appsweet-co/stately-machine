@@ -1,0 +1,19 @@
+{
+  "name": "@appsweet-co/stately-machine",
+  "version": "0.1.0",
+  "description": "A Finite State Machine using Observables",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Appsweet-co/stately-machine.git"
+  },
+  "author": "Appsweet.co <https://appsweet.co/>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Appsweet-co/stately-machine/issues"
+  },
+  "homepage": "https://github.com/Appsweet-co/stately-machine#readme"
+}
