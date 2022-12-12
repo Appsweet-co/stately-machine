@@ -7,6 +7,9 @@
     "emitDecoratorMetadata": false,
     "exactOptionalPropertyTypes": false,
     "experimentalDecorators": false,
+    "lib": [
+      "ES2020"
+    ],
     "module": "ES2020",
     "moduleResolution": "Node",
     "noFallthroughCasesInSwitch": true,
@@ -24,10 +27,10 @@
     "index.ts"
   ],
   "typedocOptions": {
+    "entryPointStrategy": "expand",
     "entryPoints": [
       "index.ts"
     ],
-    "entryPointStrategy": "expand",
     "excludeExternals": true,
     "excludeInternal": true,
     "excludePrivate": true,
