@@ -4,6 +4,7 @@
   "description": "A Finite State Machine using Observables",
   "main": "index.ts",
   "scripts": {
+    "docs": "typedoc && npx http-server ./docs -c-1",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
