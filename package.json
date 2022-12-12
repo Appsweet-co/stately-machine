@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "A Finite State Machine using Observables",
   "main": "index.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "build": "typedoc",
     "docs": "npx http-server ./docs -c-1",
