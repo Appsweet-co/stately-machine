@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/Appsweet-co/stately-machine/issues"
   },
-  "homepage": "https://github.com/Appsweet-co/stately-machine#readme"
+  "homepage": "https://github.com/Appsweet-co/stately-machine#readme",
+  "dependencies": {
+    "@appsweet-co/ts-utils": "0.35.2",
+    "rxjs": "7.6.0"
+  }
 }
