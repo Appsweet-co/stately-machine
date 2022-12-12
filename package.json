@@ -4,7 +4,10 @@
   "description": "A Finite State Machine using Observables",
   "main": "index.ts",
   "scripts": {
-    "docs": "typedoc && npx http-server ./docs -c-1",
+    "build": "typedoc",
+    "docs": "npx http-server ./docs -c-1",
+    "postbuild": "cp -f ./logo.svg ./docs/logo.svg",
+    "predocs": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
