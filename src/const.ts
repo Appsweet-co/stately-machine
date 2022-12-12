@@ -1,6 +1,6 @@
 export interface StatelyTransition<T> {
-  from: T[];
-  to: T[];
+  from: readonly T[];
+  to: readonly T[];
 }
 
 export type StatelyErrorType = 'NO_TRANSITION' | 'SAME_STATE';
