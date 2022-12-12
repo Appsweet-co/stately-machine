@@ -17,10 +17,21 @@
     "noUnusedParameters": true,
     "removeComments": true,
     "sourceMap": false,
-    "strict": true,
     "target": "ES2020"
   },
   "include": [
     "index.ts"
-  ]
+  ],
+  "typedocOptions": {
+    "entryPoints": [
+      "index.ts"
+    ],
+    "entryPointStrategy": "expand",
+    "excludeExternals": true,
+    "excludeInternal": true,
+    "excludePrivate": true,
+    "gitRemote": "https://github.com/Appsweet-co/stately-machine.git",
+    "includeVersion": true,
+    "out": "docs"
+  }
 }
