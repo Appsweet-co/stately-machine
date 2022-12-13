@@ -55,6 +55,8 @@ export class StatelyMachine<T> {
   }
 
   #validate(state: T): Result<T, StatelyErrorType> {
+    if (this.#transitions.length === 0) return { error: 'EMPTY_TRANSITIONS' };
+
     if (this.#current === state) return { error: 'SAME_STATE' };
 
     if (this.#noTransition(state)) return { error: 'NO_TRANSITION' };
