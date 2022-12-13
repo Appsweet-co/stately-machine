@@ -3,11 +3,10 @@ export interface StatelyTransition<T> {
   to: readonly T[];
 }
 
-export type StatelyErrorType = 'NO_TRANSITION' | 'SAME_STATE';
+export type StatelyErrorType = 'EMPTY_TRANSITIONS' | 'NO_TRANSITION' | 'SAME_STATE';
 
 export interface StatelyError<T> {
   type: StatelyErrorType;
   from: T;
   to: T;
 }
-
