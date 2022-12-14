@@ -35,7 +35,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
   public on$(state: T): Observable<StatelySuccess<T, C>> {
     return this.#didChange$$
       .asObservable()
-      .pipe(filter(next => next === state));
+      .pipe(filter(next => next.to === state));
   }
 
   public onError$(type: StatelyErrorType): Observable<StatelyError<T>> {
