@@ -10,3 +10,9 @@ export interface StatelyError<T> {
   from: T;
   to: T;
 }
+
+export interface StatelySuccess<T, C> {
+  context: C;
+  from: T;
+  to: T;
+}

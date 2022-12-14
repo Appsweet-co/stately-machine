@@ -1,6 +1,6 @@
 {
   "name": "@appsweet-co/stately-machine",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A Finite State Machine using Observables",
   "main": "index.ts",
   "publishConfig": {
@@ -11,6 +11,7 @@
     "build": "tsc",
     "build:docs": "typedoc",
     "docs": "npx http-server ./docs -c-1",
+    "postbuild": "npm run build:docs",
     "postbuild:docs": "cp -f ./logo.svg ./docs/logo.svg",
     "predocs": "npm run build:docs",
     "test": "echo \"Error: no test specified\" && exit 1"

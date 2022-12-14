@@ -1,12 +1,14 @@
-import type { StatelyError, StatelyErrorType, StatelyTransition } from './const';
-export declare class StatelyMachine<T> {
+import { Observable } from 'rxjs';
+import type { StatelyError, StatelyErrorType, StatelySuccess, StatelyTransition } from './const';
+export declare class StatelyMachine<T, C extends Record<string, unknown>> {
     #private;
-    constructor(initial: T);
+    constructor(initial: T, context?: C);
+    get context(): C;
     get state(): T;
-    get onAny$(): import("rxjs").Observable<T>;
-    get onAnyError$(): import("rxjs").Observable<StatelyError<T>>;
-    on$(state: T): import("rxjs").Observable<T>;
-    onError$(type: StatelyErrorType): import("rxjs").Observable<StatelyError<T>>;
+    get onAny$(): Observable<StatelySuccess<T, C>>;
+    get onAnyError$(): Observable<StatelyError<T>>;
+    on$(state: T): Observable<StatelySuccess<T, C>>;
+    onError$(type: StatelyErrorType): Observable<StatelyError<T>>;
     transitions(config: ReadonlyArray<StatelyTransition<T>>): void;
-    go(state: T): void;
+    go(state: T, context?: C): void;
 }
