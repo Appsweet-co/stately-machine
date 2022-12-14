@@ -11,6 +11,7 @@
     "build": "tsc",
     "build:docs": "typedoc",
     "docs": "npx http-server ./docs -c-1",
+    "postbuild": "npm run build:docs",
     "postbuild:docs": "cp -f ./logo.svg ./docs/logo.svg",
     "predocs": "npm run build:docs",
     "test": "echo \"Error: no test specified\" && exit 1"
