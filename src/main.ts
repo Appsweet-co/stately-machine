@@ -1,5 +1,5 @@
 import type { Result } from '@appsweet-co/ts-utils';
-import { filter, Subject } from 'rxjs';
+import { filter, Observable, Subject } from 'rxjs';
 import type { StatelyError, StatelyErrorType, StatelyTransition } from './const';
 
 export class StatelyMachine<T> {
@@ -14,35 +14,35 @@ export class StatelyMachine<T> {
     this.#transitions = [];
   }
 
-  public get state() {
+  public get state(): T {
     return this.#current;
   }
 
-  public get onAny$() {
+  public get onAny$(): Observable<T> {
     return this.#didChange$$.asObservable();
   }
 
-  public get onAnyError$() {
+  public get onAnyError$(): Observable<StatelyError<T>> {
     return this.#didError$$.asObservable();
   }
 
-  public on$(state: T) {
+  public on$(state: T): Observable<T> {
     return this.#didChange$$
       .asObservable()
       .pipe(filter(next => next === state));
   }
 
-  public onError$(type: StatelyErrorType) {
+  public onError$(type: StatelyErrorType): Observable<StatelyError<T>> {
     return this.#didError$$
       .asObservable()
       .pipe(filter(next => next.type === type));
   }
 
-  public transitions(config: ReadonlyArray<StatelyTransition<T>>) {
+  public transitions(config: ReadonlyArray<StatelyTransition<T>>): void {
     this.#transitions = config;
   }
 
-  public go(state: T) {
+  public go(state: T): void {
     const { error, ok } = this.#validate(state);
 
     if (error) {
@@ -62,7 +62,7 @@ export class StatelyMachine<T> {
     return { ok: state };
   }
 
-  #noTransition(state: T) {
+  #noTransition(state: T): boolean {
     return !this.#transitions
       .filter(item => item.from.includes(this.#current))
       .some(item => item.to.includes(state));
