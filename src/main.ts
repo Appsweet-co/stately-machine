@@ -16,28 +16,88 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
     this.#transitions = [];
   }
 
+  /**
+   * The current context of the machine.
+   *
+   * @example
+   *
+   * ```ts
+   * machine.context
+   * // => { anyProps: 'any values' }
+   * ```
+   */
   public get context(): C {
     return this.#context;
   }
 
+  /**
+   * The current state of the machine.
+   *
+   * @example
+   *
+   * ```ts
+   * machine.state
+   * // => 'some state'
+   * ```
+   */
   public get state(): T {
     return this.#current;
   }
 
+  /**
+   * Emits a {@linkcode StatelySuccess} on all state changes.
+   *
+   * @example
+   *
+   * ```ts
+   * machine.onAny$.subscribe(console.log)
+   * // ==> { from: 'some state', to: 'another state', context: { anyProps: 'any values' } }
+   * ```
+   */
   public get onAny$(): Observable<StatelySuccess<T, C>> {
     return this.#didChange$$.asObservable();
   }
 
+  /**
+   * Emits a {@linkcode StatelyError} on all state changes.
+   *
+   * @example
+   *
+   * ```ts
+   * machine.onAnyError$.subscribe(console.error)
+   * // ==> { from: 'some state', to: 'another state', type: 'some StatelyErrorType' }
+   * ```
+   */
   public get onAnyError$(): Observable<StatelyError<T>> {
     return this.#didError$$.asObservable();
   }
 
+  /**
+   * Emits a {@linkcode StatelySuccess} only for the given `state`.
+   *
+   * @example
+   *
+   * ```ts
+   * machine.on$('some state').subscribe(console.log)
+   * // ==> { from: 'some state', to: 'another state', context: { anyProps: 'any values' } }
+   * ```
+   */
   public on$(state: T): Observable<StatelySuccess<T, C>> {
     return this.#didChange$$
       .asObservable()
       .pipe(filter(next => next.to === state));
   }
 
+  /**
+   * Emits a {@linkcode StatelyError} only for the given {@linkcode StatelyErrorType}.
+   *
+   * @example
+   *
+   * ```ts
+   * machine.onError$('some StatelyErrorType').subscribe(console.error)
+   * // ==> { from: 'some state', to: 'another state', type: 'some StatelyErrorType' }
+   * ```
+   */
   public onError$(type: StatelyErrorType): Observable<StatelyError<T>> {
     return this.#didError$$
       .asObservable()
