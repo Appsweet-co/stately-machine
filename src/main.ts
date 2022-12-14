@@ -61,7 +61,8 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
       to: ok
     };
 
-    this.#current = ok;
+    this.#context = payload.context;
+    this.#current = payload.to;
 
     return this.#didChange$$.next(payload);
   }
