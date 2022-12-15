@@ -10,5 +10,5 @@ export declare class StatelyMachine<T, C extends Record<string, unknown>> {
     on$(state: T): Observable<StatelySuccess<T, C>>;
     onError$(type: StatelyErrorType): Observable<StatelyError<T>>;
     transitions(config: ReadonlyArray<StatelyTransition<T>>): void;
-    go(state: T, context?: C): void;
+    go(state: T, context?: Partial<C>): void;
 }
