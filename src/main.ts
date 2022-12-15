@@ -108,7 +108,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
     this.#transitions = config;
   }
 
-  public go(state: T, context?: C): void {
+  public go(state: T, context?: Partial<C>): void {
     const { error, ok } = this.#validate(state);
 
     if (error) {
