@@ -10,6 +10,10 @@
 
 <br />
 
+## Playground
+
+See [Stackblitz](https://stackblitz.com/edit/stately-machine?devtoolsheight=100&file=index.ts) for an interactive demo.
+
 ## Quick Start
 
 Coming soon 🚧
