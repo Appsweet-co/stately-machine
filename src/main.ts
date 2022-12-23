@@ -78,8 +78,8 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * @example
    *
    * ```ts
-   * machine.on$('some state').subscribe(console.log)
-   * // ==> { from: 'some state', to: 'another state', context: { anyProps: 'any values' } }
+   * machine.on$(States.Bar).subscribe(console.log)
+   * // ==> { from: 'Foo', to: 'Bar', context: { anyProps: 'any values' } }
    * ```
    */
   public on$(state: T): Observable<StatelySuccess<T, C>> {
@@ -94,8 +94,8 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * @example
    *
    * ```ts
-   * machine.onError$('some StatelyErrorType').subscribe(console.error)
-   * // ==> { from: 'some state', to: 'another state', type: 'some StatelyErrorType' }
+   * machine.onError$('ANY_STATELY_ERROR_TYPE').subscribe(console.error)
+   * // ==> { from: 'some state', to: 'another state', type: 'ANY_STATELY_ERROR_TYPE' }
    * ```
    */
   public onError$(type: StatelyErrorType): Observable<StatelyError<T>> {
