@@ -37,7 +37,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    *
    * ```ts
    * machine.state
-   * // => 'some state'
+   * // => 'SomeState'
    * ```
    */
   public get state(): T {
@@ -51,7 +51,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    *
    * ```ts
    * machine.onAny$.subscribe(console.log)
-   * // ==> { from: 'some state', to: 'another state', context: { anyProps: 'any values' } }
+   * // ==> { from: 'SomeState', to: 'AnotherState', context: { anyProps: 'any values' } }
    * ```
    */
   public get onAny$(): Observable<StatelySuccess<T, C>> {
@@ -59,13 +59,13 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
   }
 
   /**
-   * Emits a {@linkcode StatelyError} on all state changes.
+   * Emits a {@linkcode StatelyError} on all {@linkcode StatelyErrorType}.
    *
    * @example
    *
    * ```ts
    * machine.onAnyError$.subscribe(console.error)
-   * // ==> { from: 'some state', to: 'another state', type: 'some StatelyErrorType' }
+   * // ==> { from: 'SomeState', to: 'AnotherState', type: 'ANY_STATELY_ERROR_TYPE' }
    * ```
    */
   public get onAnyError$(): Observable<StatelyError<T>> {
@@ -79,7 +79,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    *
    * ```ts
    * machine.on$(States.Bar).subscribe(console.log)
-   * // ==> { from: 'Foo', to: 'Bar', context: { anyProps: 'any values' } }
+   * // ==> { from: 'SomeState', to: 'AnotherState', context: { anyProps: 'any values' } }
    * ```
    */
   public on$(state: T): Observable<StatelySuccess<T, C>> {
@@ -94,8 +94,8 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * @example
    *
    * ```ts
-   * machine.onError$('ANY_STATELY_ERROR_TYPE').subscribe(console.error)
-   * // ==> { from: 'some state', to: 'another state', type: 'ANY_STATELY_ERROR_TYPE' }
+   * machine.onError$('SPECIFIC_STATELY_ERROR_TYPE').subscribe(console.error)
+   * // ==> { from: 'SomeState', to: 'AnotherState', type: 'SPECIFIC_STATELY_ERROR_TYPE' }
    * ```
    */
   public onError$(type: StatelyErrorType): Observable<StatelyError<T>> {
@@ -104,10 +104,41 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
       .pipe(filter(next => next.type === type));
   }
 
+  /**
+   * Declare all valid transitions for the machine.
+   *
+   * Emits an `EMPTY_TRANSITIONS` error on {@linkcode go()} if you forget to set
+   * the transitions.
+   *
+   * @example
+   *
+   * ```ts
+   * machine.transitions([
+   *  { from: [States.SomeState], to: [States.AnotherState] },
+   *  { from: [States.AnotherState], to: Object.values(States) }
+   * ])
+   * ```
+   */
   public transitions(config: ReadonlyArray<StatelyTransition<T>>): void {
     this.#transitions = config;
   }
 
+  /**
+   * Updates the machine to the new `state` and optional `context`.
+   *
+   * Emits a {@linkcode StatelySuccess} on a successful transition.
+   *
+   * Emits a `SAME_STATE` error if you try to transition to the
+   * active state, or a `NO_TRANSITION` error if you try to transition to a state
+   * without a valid transition.
+   *
+   * @example
+   *
+   * ```ts
+   * machine.go(States.AnotherState, { foo: foo + 1 })
+   * ```
+   *
+   */
   public go(state: T, context?: Partial<C>): void {
     const { error, ok } = this.#validate(state);
 
