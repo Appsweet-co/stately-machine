@@ -1,6 +1,6 @@
 {
   "name": "@appsweet-co/stately-machine",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "description": "A Finite State Machine using Observables",
   "main": "index.ts",
   "publishConfig": {
