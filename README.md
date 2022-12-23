@@ -46,6 +46,6 @@ Use an Enum to [store states](https://stackblitz.com/edit/stately-machine?devtoo
 
 You can also set an [optional context](https://stackblitz.com/edit/stately-machine?devtoolsheight=100&file=index.ts:L22-L27) made of any key-value pairs you need. Update and access the context as needed.
 
-Stately Machine makes no assumptions about what you want to do when an error happens. You must subscribe to the error observables to get details about each error.
+Stately Machine makes no assumptions about what you want to do when an error happens. You must subscribe to the [error observables](https://stackblitz.com/edit/stately-machine?devtoolsheight=100&file=index.ts:L47-L51) to get details about each error.
 
-Stately Machine also makes no assumptions about what you want to do for a successful change in state. You must subscribe to the success observables to get details about each state change.
+Stately Machine also makes no assumptions about what you want to do for a successful change in state. You must subscribe to the [success observables](https://stackblitz.com/edit/stately-machine?devtoolsheight=100&file=index.ts:L57-L61) to get details about each state change.
