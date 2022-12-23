@@ -20,7 +20,7 @@ See our [documentation website](https://appsweet-co.github.io/stately-machine/) 
 
 ## Error Types
 
-See our [wiki](https://github.com/Appsweet-co/stately-machine/wiki/Error-Types) for details on all errors.
+See our [API Docs](https://appsweet-co.github.io/stately-machine/types/StatelyErrorType.html) for details on all errors.
 
 ## Quick Start
 

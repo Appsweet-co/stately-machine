@@ -45,7 +45,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
   }
 
   /**
-   * Emits a {@linkcode StatelySuccess} on all state changes.
+   * Emits a {@linkcode StatelySuccess} on all successful state changes.
    *
    * @example
    *
@@ -78,7 +78,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * @example
    *
    * ```ts
-   * machine.on$(States.Bar).subscribe(console.log)
+   * machine.on$(States.AnotherState).subscribe(console.log)
    * // ==> { from: 'SomeState', to: 'AnotherState', context: { anyProps: 'any values' } }
    * ```
    */
@@ -107,7 +107,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
   /**
    * Declare all valid transitions for the machine.
    *
-   * Emits an `EMPTY_TRANSITIONS` error on {@linkcode go()} if you forget to set
+   * Emits an `EMPTY_TRANSITIONS` error on {@linkcode go} if you forget to set
    * the transitions.
    *
    * @example

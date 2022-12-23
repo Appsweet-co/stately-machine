@@ -15,9 +15,20 @@
 <li><a href="../modules.html">@appsweet-co/stately-machine - v0.4.3</a></li>
 <li><a href="StatelyErrorType.html">StatelyErrorType</a></li></ul>
 <h1>Type alias StatelyErrorType</h1></div>
-<div class="tsd-signature">Stately<wbr/>Error<wbr/>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;EMPTY_TRANSITIONS&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;NO_TRANSITION&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;SAME_STATE&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">Stately<wbr/>Error<wbr/>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;EMPTY_TRANSITIONS&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;NO_TRANSITION&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;SAME_STATE&quot;</span></div>
+<div class="tsd-comment tsd-typography"><ul>
+<li><p><code>EMPTY_TRANSITIONS</code>: You must set all valid transitions to use the machine.
+Use <a href="../classes/StatelyMachine.html#transitions"><code>transitions</code></a> to declare valid transitions.</p>
+</li>
+<li><p><code>NO_TRANSITION</code>: There&#39;s no valid transition from the active state to the
+new state.</p>
+</li>
+<li><p><code>SAME_STATE</code>: You can&#39;t transition from the active state to itself.</p>
+</li>
+</ul>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Appsweet-co/stately-machine.git/4cbb090">src/const.ts:6</a></li></ul></aside></div>
+<li>Defined in <a href="https://github.com/Appsweet-co/stately-machine.git/d40750d">src/const.ts:17</a></li></ul></aside></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
