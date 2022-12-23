@@ -3,16 +3,16 @@ import { filter, Observable, Subject } from 'rxjs';
 import type { StatelyError, StatelyErrorType, StatelySuccess, StatelyTransition } from './const';
 
 export class StatelyMachine<T, C extends Record<string, unknown>> {
+  #active: T;
   #context: C;
-  #current: T;
   #transitions: ReadonlyArray<StatelyTransition<T>>;
 
   #didChange$$ = new Subject<StatelySuccess<T, C>>();
   #didError$$ = new Subject<StatelyError<T>>();
 
   constructor(initial: T, context = {} as C) {
+    this.#active = initial;
     this.#context = context;
-    this.#current = initial;
     this.#transitions = [];
   }
 
@@ -41,7 +41,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * ```
    */
   public get state(): T {
-    return this.#current;
+    return this.#active;
   }
 
   /**
@@ -112,24 +112,24 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
     const { error, ok } = this.#validate(state);
 
     if (error) {
-      return this.#didError$$.next({ type: error, from: this.#current, to: state });
+      return this.#didError$$.next({ type: error, from: this.#active, to: state });
     }
 
     const payload: StatelySuccess<T, C> = {
       context: { ...this.#context, ...context },
-      from: this.#current,
+      from: this.#active,
       to: ok
     };
 
+    this.#active = payload.to;
     this.#context = payload.context;
-    this.#current = payload.to;
 
     return this.#didChange$$.next(payload);
   }
 
   #validate(state: T): Result<T, StatelyErrorType> {
     if (this.#transitions.length === 0) return { error: 'EMPTY_TRANSITIONS' };
-    if (this.#current === state) return { error: 'SAME_STATE' };
+    if (this.#active === state) return { error: 'SAME_STATE' };
     if (this.#noTransition(state)) return { error: 'NO_TRANSITION' };
 
     return { ok: state };
@@ -137,7 +137,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
 
   #noTransition(state: T): boolean {
     return !this.#transitions
-      .filter(item => item.from.includes(this.#current))
+      .filter(item => item.from.includes(this.#active))
       .some(item => item.to.includes(state));
   }
 }
