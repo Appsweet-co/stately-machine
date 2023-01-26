@@ -3,8 +3,8 @@ import type { StatelyError, StatelyErrorType, StatelySuccess, StatelyTransition 
 export declare class StatelyMachine<T, C extends Record<string, unknown>> {
     #private;
     constructor(initial: T, context?: C);
-    get context(): C;
     get state(): T;
+    get context(): C;
     get onAny$(): Observable<StatelySuccess<T, C>>;
     get onAnyError$(): Observable<StatelyError<T>>;
     on$(state: T): Observable<StatelySuccess<T, C>>;
