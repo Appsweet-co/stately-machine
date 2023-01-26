@@ -1,33 +1,17 @@
 import type { Result } from '@appsweet-co/ts-utils';
-import { filter, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, pairwise, Subject, zip } from 'rxjs';
 import type { StatelyError, StatelyErrorType, StatelySuccess, StatelyTransition } from './const';
+import { toSuccess } from './utils';
 
 export class StatelyMachine<T, C extends Record<string, unknown>> {
-  #active: T;
-  #context: C;
-  #transitions: ReadonlyArray<StatelyTransition<T>>;
-
-  #didChange$$ = new Subject<StatelySuccess<T, C>>();
-  #didError$$ = new Subject<StatelyError<T>>();
+  #context$$ = new BehaviorSubject<C>(undefined);
+  #error$$ = new Subject<StatelyError<T>>();
+  #state$$ = new BehaviorSubject<T>(undefined);
+  #transitions: ReadonlyArray<StatelyTransition<T>> = [];
 
   constructor(initial: T, context = {} as C) {
-    this.#active = initial;
-    this.#context = context;
-    this.#transitions = [];
-  }
-
-  /**
-   * The current context of the machine.
-   *
-   * @example
-   *
-   * ```ts
-   * machine.context
-   * // => { anyProps: 'any values' }
-   * ```
-   */
-  public get context(): C {
-    return this.#context;
+    this.#state$$.next(initial);
+    this.#context$$.next(context);
   }
 
   /**
@@ -41,7 +25,21 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * ```
    */
   public get state(): T {
-    return this.#active;
+    return this.#state$$.getValue();
+  }
+
+  /**
+   * The current context of the machine.
+   *
+   * @example
+   *
+   * ```ts
+   * machine.context
+   * // => { anyProps: 'any values' }
+   * ```
+   */
+  public get context(): C {
+    return this.#context$$.getValue();
   }
 
   /**
@@ -55,7 +53,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * ```
    */
   public get onAny$(): Observable<StatelySuccess<T, C>> {
-    return this.#didChange$$.asObservable();
+    return zip(this.#state$$, this.#context$$).pipe(pairwise(), map(toSuccess));
   }
 
   /**
@@ -69,7 +67,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * ```
    */
   public get onAnyError$(): Observable<StatelyError<T>> {
-    return this.#didError$$.asObservable();
+    return this.#error$$.asObservable();
   }
 
   /**
@@ -83,9 +81,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * ```
    */
   public on$(state: T): Observable<StatelySuccess<T, C>> {
-    return this.#didChange$$
-      .asObservable()
-      .pipe(filter(next => next.to === state));
+    return this.onAny$.pipe(filter(next => next.to === state));
   }
 
   /**
@@ -99,9 +95,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * ```
    */
   public onError$(type: StatelyErrorType): Observable<StatelyError<T>> {
-    return this.#didError$$
-      .asObservable()
-      .pipe(filter(next => next.type === type));
+    return this.onAnyError$.pipe(filter(next => next.type === type));
   }
 
   /**
@@ -143,24 +137,16 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
     const { error, ok } = this.#validate(state);
 
     if (error) {
-      return this.#didError$$.next({ type: error, from: this.#active, to: state });
+      return this.#error$$.next({ type: error, from: this.state, to: state });
     }
 
-    const payload: StatelySuccess<T, C> = {
-      context: { ...this.#context, ...context },
-      from: this.#active,
-      to: ok
-    };
-
-    this.#active = payload.to;
-    this.#context = payload.context;
-
-    return this.#didChange$$.next(payload);
+    this.#state$$.next(ok);
+    this.#context$$.next({ ...this.context, ...context });
   }
 
   #validate(state: T): Result<T, StatelyErrorType> {
     if (this.#transitions.length === 0) return { error: 'EMPTY_TRANSITIONS' };
-    if (this.#active === state) return { error: 'SAME_STATE' };
+    if (this.state === state) return { error: 'SAME_STATE' };
     if (this.#noTransition(state)) return { error: 'NO_TRANSITION' };
 
     return { ok: state };
@@ -168,7 +154,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
 
   #noTransition(state: T): boolean {
     return !this.#transitions
-      .filter(item => item.from.includes(this.#active))
+      .filter(item => item.from.includes(this.state))
       .some(item => item.to.includes(state));
   }
 }
