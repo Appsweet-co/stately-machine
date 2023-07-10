@@ -3,14 +3,14 @@ import type { StatelyError, StatelyErrorType, StatelySuccess, StatelyTransition 
 import { toSuccess } from './utils';
 
 export class StatelyMachine<T, C extends Record<string, unknown>> {
-  #context$$ = new BehaviorSubject<C>(undefined);
-  #error$$ = new Subject<StatelyError<T>>();
-  #state$$ = new BehaviorSubject<T>(undefined);
+  #context = new BehaviorSubject<C>(undefined);
+  #error = new Subject<StatelyError<T>>();
+  #state = new BehaviorSubject<T>(undefined);
   #transitions: ReadonlyArray<StatelyTransition<T>> = [];
 
   constructor(initial: T, context = {} as C) {
-    this.#state$$.next(initial);
-    this.#context$$.next(context);
+    this.#state.next(initial);
+    this.#context.next(context);
   }
 
   /**
@@ -24,7 +24,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * ```
    */
   public get state(): T {
-    return this.#state$$.getValue();
+    return this.#state.getValue();
   }
 
   /**
@@ -38,7 +38,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * ```
    */
   public get context(): C {
-    return this.#context$$.getValue();
+    return this.#context.getValue();
   }
 
   /**
@@ -52,7 +52,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * ```
    */
   public get onAny$(): Observable<StatelySuccess<T, C>> {
-    return zip(this.#state$$, this.#context$$).pipe(pairwise(), map(toSuccess));
+    return zip(this.#state, this.#context).pipe(pairwise(), map(toSuccess));
   }
 
   /**
@@ -66,7 +66,7 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    * ```
    */
   public get onAnyError$(): Observable<StatelyError<T>> {
-    return this.#error$$.asObservable();
+    return this.#error.asObservable();
   }
 
   /**
@@ -135,11 +135,11 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
   public go(state: T, context?: Partial<C>): void {
     this.#validate(state)
       .then(() => {
-        this.#state$$.next(state);
-        this.#context$$.next({ ...this.context, ...context });
+        this.#state.next(state);
+        this.#context.next({ ...this.context, ...context });
       })
       .catch((type) => {
-        this.#error$$.next({ type, from: this.state, to: state });
+        this.#error.next({ type, from: this.state, to: state });
       })
   }
 
