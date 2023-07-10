@@ -1,4 +1,3 @@
-import type { Result } from '@appsweet-co/ts-utils';
 import { BehaviorSubject, filter, map, Observable, pairwise, Subject, zip } from 'rxjs';
 import type { StatelyError, StatelyErrorType, StatelySuccess, StatelyTransition } from './const';
 import { toSuccess } from './utils';
@@ -134,22 +133,24 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
    *
    */
   public go(state: T, context?: Partial<C>): void {
-    const { error, ok } = this.#validate(state);
-
-    if (error) {
-      return this.#error$$.next({ type: error, from: this.state, to: state });
-    }
-
-    this.#state$$.next(ok);
-    this.#context$$.next({ ...this.context, ...context });
+    this.#validate(state)
+      .then(() => {
+        this.#state$$.next(state);
+        this.#context$$.next({ ...this.context, ...context });
+      })
+      .catch((type) => {
+        this.#error$$.next({ type, from: this.state, to: state });
+      })
   }
 
-  #validate(state: T): Result<T, StatelyErrorType> {
-    if (this.#transitions.length === 0) return { error: 'EMPTY_TRANSITIONS' };
-    if (this.state === state) return { error: 'SAME_STATE' };
-    if (this.#noTransition(state)) return { error: 'NO_TRANSITION' };
+  #validate(state: T) {
+    return new Promise((resolve, reject) => {
+      if (this.#transitions.length === 0) return reject('EMPTY_TRANSITIONS');
+      if (this.state === state) return reject('SAME_STATE');
+      if (this.#noTransition(state)) return reject('NO_TRANSITION');
 
-    return { ok: state };
+      return resolve(state);
+    })
   }
 
   #noTransition(state: T): boolean {
