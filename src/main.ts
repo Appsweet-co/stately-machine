@@ -138,13 +138,13 @@ export class StatelyMachine<T, C extends Record<string, unknown>> {
         this.#state.next(state);
         this.#context.next({ ...this.context, ...context });
       })
-      .catch((type) => {
+      .catch((type: StatelyErrorType) => {
         this.#error.next({ type, from: this.state, to: state });
       })
   }
 
   #validate(state: T) {
-    return new Promise((resolve, reject) => {
+    return new Promise<T>((resolve, reject) => {
       if (this.#transitions.length === 0) return reject('EMPTY_TRANSITIONS');
       if (this.state === state) return reject('SAME_STATE');
       if (this.#noTransition(state)) return reject('NO_TRANSITION');
